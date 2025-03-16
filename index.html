@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dessert Shop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f6ef;
+            color: #333;
+            padding: 20px;
+        }
+
+        header {
+            text-align: left;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .desserts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            flex: 3;
+        }
+
+        .dessert-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dessert-card img {
+            width: 100%;
+            border-radius: 10px;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .dessert-card h3 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .dessert-card p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #e05656;
+        }
+
+        .cart {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .cart h2 {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        .cart-item button {
+            background: #ff4c4c;
+            padding: 5px 8px;
+            font-size: 12px;
+        }
+
+        .cart-item button:hover {
+            background: #d94444;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            main {
+                flex-direction: column;
+            }
+
+            .desserts-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .cart {
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .desserts-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+
+            button {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .desserts-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .cart {
+                text-align: center;
+            }
+
+            .cart h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Desserts</h1>
+    </header>
+
+    <main>
+        <section class="desserts-grid">
+            <!-- Dessert items will be inserted dynamically -->
+        </section>
+
+        <aside class="cart">
+            <h2>Your Cart (<span id="cart-count">0</span>)</h2>
+            <div id="cart-items">Your added items will appear here</div>
+        </aside>
+    </main>
+
+    <script>
+        const desserts = [
+            { name: "Waffle with Berries", price: 6.50, img: "image-avatar.jpg" },
+            { name: "Vanilla Crème Brûlée", price: 7.00, img: "desktop-design-ticket.jpg" },
+            { name: "Macaron Mix of Five", price: 8.00, img: "desktop-design-empty.jpg" },
+            { name: "Classic Tiramisu", price: 5.50, img: "image-avatar.jpg" },
+            { name: "Pistachio Baklava", price: 4.00, img: "desktop-design-ticket.jpg" },
+            { name: "Lemon Meringue Pie", price: 5.00, img: "desktop-design-empty.jpg" },
+            { name: "Red Velvet Cake", price: 4.50, img: "image-avatar.jpg" },
+            { name: "Salted Caramel Brownie", price: 5.50, img: "desktop-design-ticket.jpg" },
+            { name: "Vanilla Panna Cotta", price: 6.50, img: "desktop-design-empty.jpg" },
+        ];
+
+        const cart = [];
+        const dessertsGrid = document.querySelector('.desserts-grid');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartCount = document.getElementById('cart-count');
+
+        function displayDesserts() {
+            dessertsGrid.innerHTML = desserts.map((dessert, index) => `
+                <div class="dessert-card">
+                    <img src="${dessert.img}" alt="${dessert.name}">
+                    <h3>${dessert.name}</h3>
+                    <p>$${dessert.price.toFixed(2)}</p>
+                    <button onclick="addToCart(${index})">Add to Cart</button>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(index) {
+            cart.push(desserts[index]);
+            updateCart();
+        }
+
+        function updateCart() {
+            cartCount.innerText = cart.length;
+            cartItemsContainer.innerHTML = cart.length === 0 
+                ? "Your added items will appear here"
+                : cart.map((item, i) => `
+                    <div class="cart-item">
+                        <span>${item.name} - $${item.price.toFixed(2)}</span>
+                        <button onclick="removeFromCart(${i})">❌</button>
+                    </div>
+                `).join('');
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // Load desserts on page load
+        document.addEventListener('DOMContentLoaded', displayDesserts);
+    </script>
+
+</body>
+</html>
